@@ -7,6 +7,7 @@ public:
 	virtual ~Component();
 	virtual void Update(float deltatime);
 	int GetUpdateOrder()const { return mUpdateOrder; }
+	virtual void ProcessInput(const uint8_t* keyState) {}
 protected:
 	class Actor* mOwner;
 	int mUpdateOrder;

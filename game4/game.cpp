@@ -5,11 +5,12 @@
 #include "SpriteComponent.h"
 #include "BGSpriteComponent.h"
 #include "Asteroid.h"
+#include"Ship.h"
 
 Game::Game() :mWindow(nullptr)
 , mRenderer(nullptr)
 , mIsRunning(true)
-, mUpdatingActors(false)
+, mUpdatingActors(false),mShip(nullptr),mTickCount(0)
 {
 
 }
@@ -111,7 +112,14 @@ void Game::ProcessInput() {
 	{
 		mIsRunning = false;
 	}
-
+	mUpdatingActors = true;
+	for (auto act : mActors) {
+	
+			act->ProcessInput(state);
+		
+	
+	}
+	mUpdatingActors = false;
 	// Process ship input
 
 }
@@ -231,6 +239,10 @@ void Game::LoadData()
 	for (int i = 0; i < numAsteroid; i++) {
 		new Asteroid(this);
 	}
+	mShip = new Ship(this);
+	
+	mShip->SetPosition(Vector2(100.0f, 384.0f));
+	mShip->SetScale(1.5f);
 }
 void Game::UnloadData()
 {

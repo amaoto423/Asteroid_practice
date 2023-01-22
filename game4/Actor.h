@@ -24,7 +24,8 @@ public:
 
 	State GetState() const { return mState; }
 	void SetState(State state) { mState = state; }
-
+	void ProcessInput(const uint8_t* keyState);
+	virtual void ActorInput(const uint8_t* keyState){};
 	class Game* GetGame() { return mGame; }
 
 
