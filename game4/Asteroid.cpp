@@ -15,8 +15,14 @@ Asteroid::Asteroid(Game* game) :Actor(game) {
 
 	MoveComponent* mc = new MoveComponent(this);
 	mc->SetForwardSpeed(150.0f);
+	mCircle = new CircleComponent(this);
+	mCircle->SetRadius(40.0f);
+	GetGame()->AddAsteroid(this);
+
 }
+
+
 Asteroid::~Asteroid()
 {
-
+	GetGame()->RemoveAsteroid(this);
 }

@@ -8,6 +8,7 @@ public:
 	virtual void Update(float deltatime);
 	int GetUpdateOrder()const { return mUpdateOrder; }
 	virtual void ProcessInput(const uint8_t* keyState) {}
+	virtual void OnupdateWorldTransform(){}
 protected:
 	class Actor* mOwner;
 	int mUpdateOrder;

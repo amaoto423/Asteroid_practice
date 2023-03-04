@@ -34,11 +34,15 @@ public:
 	Vector2 GetForward() {
 		return Vector2(Math::Cos(mRotation), -Math::Sin(mRotation));
 	}
-private:
+	void ComputeWorldTransform();
+	Matrix4 GetWorldTransform() { return mWorldTransform; }
+protected:
 	State mState;
 	Vector2 mPosition;
 	float mScale;
 	float mRotation;
 	std::vector<class Component*> mComponents;
 	class Game* mGame;
+	Matrix4 mWorldTransform;
+	bool mRecomputeWorldTransform;
 };
