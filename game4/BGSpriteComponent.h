@@ -8,7 +8,7 @@ class BGSpriteComponent :public SpriteComponent {
 public:
 	BGSpriteComponent(class Actor* owner, int draworder = 10);
 	void Update(float deltatime)override;
-	void Draw(SDL_Renderer* renderer)override;
+	void Draw(SDL_Renderer* renderer);
 	void SetBGTextures(const std::vector<SDL_Texture*>& textures);
 	void SetScreenSize(const Vector2& size) { mScreenSize = size; };
 	void SetScrollSpeed(float Speed) { mScreenSpeed = Speed; };
