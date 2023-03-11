@@ -50,7 +50,7 @@ bool Game::Initialize() {
 	}
 	LoadShaders();
 
-	InitSpriteVerts(vertexBuffer,indexBuffer);
+	InitSpriteVerts();
 	glGetError();
 	if (!mWindow) {
 		SDL_Log("window failed %s", SDL_GetError());
@@ -86,10 +86,22 @@ void Game::Shutdown() {
 	SDL_DestroyWindow(mWindow);
 	SDL_Quit();
 }
-void Game::InitSpriteVerts(const float* vertexBuffer,  const unsigned int* indexBuffer) {
+void Game::InitSpriteVerts() {
+	float vertexBuffer[] = {
+	-0.5,0.5,0.0,0.0,0.0,
+	0.5,0.5,0.0,1.0,0.0,
+	0.5,-0.5,0.0,1.0,1.0,
+	-0.5,-0.5,0.0,0.0,1.0
+	};
+	unsigned int indexBuffer[] = {
+		0,1,2,
+		2,3,0
+	};
 	mSpriteVerts = new VertexArray(vertexBuffer,4,indexBuffer,6);
 }
 void Game::GenerateOutput() {
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glClearColor(0.86f, 0.86f, 0.86f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	
@@ -187,9 +199,8 @@ void Game::RemoveActor(Actor* actor) {
 	}
 }
 
-
-SDL_Texture* Game::GetTexture(const std::string& fileName) {
-	SDL_Texture* tex = nullptr;
+class Texture* Game::GetTexture(const std::string& fileName) {
+	Texture* tex = nullptr;
 	// Is the texture already in the map?
 	auto iter = mTextures.find(fileName);
 	if (iter != mTextures.end())
@@ -198,24 +209,20 @@ SDL_Texture* Game::GetTexture(const std::string& fileName) {
 	}
 	else
 	{
+		tex = new Texture();
 		// Load from file
-		SDL_Surface* surf = IMG_Load(fileName.c_str());
-		if (!surf)
+		if (tex->Load(fileName)) {
+			mTextures.emplace(fileName, tex);
+		}
+		else
 		{
-			SDL_Log("Failed to load texture file %s", fileName.c_str());
-			return nullptr;
+			SDL_Log("Texture %s cant be loaded ", fileName.c_str());
+			delete tex;
+			tex = nullptr;
+			
 		}
 
-		// Create texture from surface
-		tex = SDL_CreateTextureFromSurface(mRenderer, surf);
-		SDL_FreeSurface(surf);
-		if (!tex)
-		{
-			SDL_Log("Failed to convert surface to texture for %s", fileName.c_str());
-			return nullptr;
-		}
-
-		mTextures.emplace(fileName.c_str(), tex);
+	
 	}
 	return tex;
 }
@@ -274,7 +281,7 @@ void Game::UnloadData()
 	// Destroy textures
 	for (auto i : mTextures)
 	{
-		SDL_DestroyTexture(i.second);
+		i.second->Unload();
 	}
 	mTextures.clear();
 }
@@ -290,11 +297,15 @@ void Game::RemoveAsteroid(Asteroid* ast)
 
 bool Game::LoadShaders() {
 	mSpriteShader = new Shader();
-	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(1024, 768);
-	mSpriteShader->SetMatrixUniform("uViewProj", viewProj);
-	if (!mSpriteShader->Load("Transform.vert", "Basic.frag")) {
+	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(1024.0f, 768.0f);
+	
+	if (!mSpriteShader->Load("Sprite.vert", "Sprite.frag")) {
 		return false;
 
 	}
 	mSpriteShader->SetActive();
+	mSpriteShader->SetMatrixUniform("uViewProj", viewProj);
+	
+	return true;
+	
 }

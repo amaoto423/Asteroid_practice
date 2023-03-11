@@ -83,6 +83,6 @@ void Shader::Unload(){
 }
 void Shader::SetMatrixUniform(const char* name, const Matrix4& matrix) {
 	GLuint loc = glGetUniformLocation(mShaderProgram, name);
-	if (!loc) { SDL_Log("%sfailed",name); }
+	if (loc==-1) { SDL_Log("%s failed", name); }
 	glUniformMatrix4fv(loc, 1, GL_TRUE, matrix.GetAsFloatPtr());
 }

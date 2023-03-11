@@ -8,6 +8,7 @@ Actor::Actor(Game* game)
 	, mScale(1.0f)
 	, mRotation(0.0f)
 	, mGame(game)
+	,mRecomputeWorldTransform(true)
 {
 	mGame->AddActor(this);
 }
@@ -75,6 +76,7 @@ void Actor::ProcessInput(const uint8_t* keyState) {
 }
 void Actor::ComputeWorldTransform() {
 	if (mRecomputeWorldTransform) {
+	//	SDL_Log("Updating");
 		mRecomputeWorldTransform = false;
 		mWorldTransform = Matrix4::CreateScale(mScale);
 		mWorldTransform *= Matrix4::CreateRotationZ(mRotation);

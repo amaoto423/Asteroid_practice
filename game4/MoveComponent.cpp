@@ -12,22 +12,24 @@ void MoveComponent::Update(float deltatime) {
 		float rot = mOwner->GetRotation();
 		rot += mAngularSpeed * deltatime;
 		mOwner->SetRotation(rot);
+		
 	}
 	if (!Math::NearZero(mForwardSpeed)) {
 		Vector2 pos = mOwner->GetPosition();
 		pos += mOwner->GetForward() * mForwardSpeed * deltatime;
-		if (pos.x < 0) {
-			pos.x = 1024;
+		if (pos.x < -512) {
+			pos.x = 512;
 		}
-		if (pos.x > 1024) {
-			pos.x = 0;
+		if (pos.x > 512) {
+			pos.x =-512;
 		}
-		if (pos.y > 768) {
-			pos.y = 0;
+		if (pos.y > 384) {
+			pos.y = -384;
 		}
-		if (pos.y < 0) {
-			pos.y = 768;
+		if (pos.y < -384) {
+			pos.y = 384;
 		}
 		mOwner->SetPosition(pos);
+		
 	}
 }
